@@ -1,0 +1,31 @@
+version: '3.6'
+services:
+  redis:
+    image: redis:5.0-alpine3.9
+    command: ["--save", "\"\"", "--appendonly", "yes", "--dir", "/data"]
+#    ports:
+#      - "127.0.0.1:6379:6379"
+  pgsql:
+    image: postgres:9.5.17
+#    ports:
+#      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_PASSWORD: securitytheatre
+      POSTGRES_USER: discourse
+      POSTGRES_DB: discourse
+  backend:
+    command: ['/sbin/boot']
+    image: local_discourse/modified
+    ports:
+      - "127.0.0.1:80:80"
+    environment:
+      - DISCOURSE_DB_USERNAME=discourse
+      - DISCOURSE_DB_PASSWORD=securitytheatre
+      - DISCOURSE_DB_NAME=discourse
+      - DISCOURSE_DB_HOST=pgsql
+      - DISCOURSE_REDIS_HOST=redis
+      - DISCOURSE_HOSTNAME=discourse.guideline.io
+      - DISCOURSE_SMTP_ADDRESS=smtp-relay.gmail.com
+      - DISCOURSE_SMTP_PORT=587
+      - DISCOURSE_SMTP_USER_NAME=
+      - DISCOURSE_SMTP_PASSWORD=
